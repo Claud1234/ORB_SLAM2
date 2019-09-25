@@ -65,15 +65,19 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "RGBD");
     ros::start();
 
-    if(argc != 4)
+    if(argc != 6)
     {
-        cerr << endl << "Usage: rosrun ORB_SLAM2 Stereo path_to_vocabulary path_to_settings do_rectify" << endl;
+        cerr << endl << "Usage: rosrun ORB_SLAM2 Stereo path_to_vocabulary path_to_settings do_rectify show_viewer save_traj" << endl;
         ros::shutdown();
         return 1;
     }
 
+    bool viewer;
+    stringstream ss1(argv[4]);
+        ss1 >> boolalpha >> viewer;
+
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::STEREO,true);
+    ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::STEREO,viewer);
 
     ros::NodeHandle nh;
 
@@ -134,8 +138,13 @@ int main(int argc, char **argv)
 
     // Uncomment to save camera trajectory
     // SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory_TUM_Format.txt");
-    // SLAM.SaveTrajectoryTUM("FrameTrajectory_TUM_Format.txt");
-    // SLAM.SaveTrajectoryKITTI("FrameTrajectory_KITTI_Format.txt");
+    bool print_trajs;
+    stringstream ss2(argv[5]);
+        ss2 >> boolalpha >> print_trajs;
+    if(print_trajs){
+        SLAM.SaveTrajectoryTUM("FrameTrajectory_TUM_Format.txt");
+        SLAM.SaveTrajectoryKITTI("FrameTrajectory_KITTI_Format.txt");
+    }
 
     ros::shutdown();
 
