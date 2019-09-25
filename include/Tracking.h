@@ -54,8 +54,13 @@ class Tracking
 {  
 
 public:
+#ifdef PANGOLIN
     Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Map* pMap,
              KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor);
+#else
+    Tracking(System* pSys, ORBVocabulary* pVoc, Map* pMap,
+             KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor);
+#endif
 
     // Preprocess the input and call Track(). Extract features and performs stereo matching.
     cv::Mat GrabImageStereo(const cv::Mat &imRectLeft,const cv::Mat &imRectRight, const double &timestamp);
