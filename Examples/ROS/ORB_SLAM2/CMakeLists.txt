@@ -39,15 +39,28 @@ if(NOT OpenCV_FOUND)
 endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
-find_package(Pangolin REQUIRED)
 
+if (PANGOLIN)
+find_package(Pangolin REQUIRED)
+endif ()
+
+if (PANGOLIN)
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/../../../
 ${PROJECT_SOURCE_DIR}/../../../include
 ${Pangolin_INCLUDE_DIRS}
 )
+else()
+include_directories(
+${PROJECT_SOURCE_DIR}
+${PROJECT_SOURCE_DIR}/../../../
+${PROJECT_SOURCE_DIR}/../../../include
+${EIGEN3_INCLUDE_DIR}
+)
+endif ()
 
+if (PANGOLIN)
 set(LIBS
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
@@ -57,6 +70,16 @@ ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM2.so
 -lboost_system
 )
+else ()
+set(LIBS
+${OpenCV_LIBS}
+${EIGEN3_LIBS}
+${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
+${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
+${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM2.so
+-lboost_system
+)
+endif ()
 
 # Node for monocular camera
 rosbuild_add_executable(Mono
@@ -68,6 +91,7 @@ ${LIBS}
 )
 
 # Node for monocular camera (Augmented Reality Demo)
+if (PANGOLIN)
 rosbuild_add_executable(MonoAR
 src/AR/ros_mono_ar.cc
 src/AR/ViewerAR.h
@@ -77,6 +101,8 @@ src/AR/ViewerAR.cc
 target_link_libraries(MonoAR
 ${LIBS}
 )
+endif ()
+
 
 # Node for stereo camera
 rosbuild_add_executable(Stereo

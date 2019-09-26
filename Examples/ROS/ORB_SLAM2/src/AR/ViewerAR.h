@@ -24,7 +24,11 @@
 
 #include <mutex>
 #include <opencv2/core/core.hpp>
+
+#ifdef PANGOLIN
 #include <pangolin/pangolin.h>
+#endif
+
 #include <string>
 #include"../../../include/System.h"
 
@@ -47,7 +51,11 @@ public:
     float rang;
     //transformation from world to the plane
     cv::Mat Tpw;
+
+#ifdef PANGOLIN
     pangolin::OpenGlMatrix glTpw;
+#endif
+
     //MapPoints that define the plane
     std::vector<MapPoint*> mvMPs;
     //camera pose when the plane was first observed (to compute normal direction)
@@ -89,7 +97,10 @@ private:
     void PrintStatus(const int &status, const bool &bLocMode, cv::Mat &im);
     void AddTextToImage(const std::string &s, cv::Mat &im, const int r=0, const int g=0, const int b=0);
     void LoadCameraPose(const cv::Mat &Tcw);
+#ifdef PANGOLIN
     void DrawImageTexture(pangolin::GlTexture &imageTexture, cv::Mat &im);
+#endif
+
     void DrawCube(const float &size, const float x=0, const float y=0, const float z=0);
     void DrawPlane(int ndivs, float ndivsize);
     void DrawPlane(Plane* pPlane, int ndivs, float ndivsize);
